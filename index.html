@@ -1,0 +1,215 @@
+仕事<!DOCTYPE html>
+<html lang="ja">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2196f3">
+
+
+<head>
+<meta charset="UTF-8">
+<title>出張管理アプリ</title>
+<style>
+body { font-family: Arial; padding: 20px; }
+input, select { margin: 5px; padding: 5px; }
+button { padding: 5px 10px; }
+table { border-collapse: collapse; margin-top: 20px; }
+th, td { border: 1px solid #ccc; padding: 8px; }
+th { background: #f0f0f0; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<h2>出張入力</h2>
+
+
+<input type="date" id="startDate">
+〜
+<input type="date" id="endDate">
+
+<input type="text" id="client" placeholder="客先">
+
+<select id="area">
+  <option value="">地方選択</option>
+  <option>関東</option>
+  <option>関西</option>
+  <option>中部</option>
+  <option>九州</option>
+</select>
+
+<input type="text" id="product" placeholder="製品">
+
+<select id="content" onchange="toggleOtherInput()">
+  <option value="">内容選択</option>
+  <option>据付</option>
+  <option>改造</option>
+  <option>修理</option>
+  <option>保守</option>
+  <option>その他</option>
+</select>
+
+<input type="text" id="otherContent" placeholder="内容を入力" class="hidden">
+
+<input type="number" id="cost" placeholder="出張費">
+<button id="saveBtn" onclick="addTrip()">保存</button>
+
+
+<h2>出張一覧</h2>
+<table>
+<thead>
+<tr>
+<th>期間</th>
+<th>客先</th>
+<th>地方</th>
+<th>製品</th>
+<th>内容</th>
+<th>出張費</th>
+<th>削除</th>
+</tr>
+</thead>
+<tbody id="tripList"></tbody>
+</table>
+
+<script>
+let trips = JSON.parse(localStorage.getItem("trips")) || [];
+
+
+function saveToStorage() {
+  localStorage.setItem("trips", JSON.stringify(trips));
+}
+
+function addTrip() {
+  const startDate = document.getElementById("startDate").value;
+  const endDate = document.getElementById("endDate").value;
+
+  let selectedContent = document.getElementById("content").value;
+  const otherContent = document.getElementById("otherContent").value;
+
+  if (selectedContent === "その他") {
+    if (!otherContent) {
+      alert("その他の内容を入力してください");
+      return;
+    }
+    selectedContent = otherContent;
+  }
+
+  if (!startDate || !endDate) {
+    alert("開始日と終了日を入力してください");
+    return;
+  }
+
+  if (startDate > endDate) {
+    alert("終了日は開始日以降にしてください");
+    return;
+  }
+
+  const trip = {
+    startDate,
+    endDate,
+    client: document.getElementById("client").value,
+    area: document.getElementById("area").value,
+    product: document.getElementById("product").value,
+    content: selectedContent,
+    cost: document.getElementById("cost").value
+  };
+
+  if (editIndex === null) {
+    // 新規保存
+    trips.push(trip);
+  } else {
+    // 更新
+    trips[editIndex] = trip;
+    editIndex = null;
+  }
+
+  saveToStorage();
+  renderTrips();
+
+  // 🔽 ここが超重要（必ず毎回実行される）
+  document.getElementById("saveBtn").textContent = "保存";
+
+  // フォーム初期化
+  document.querySelectorAll("input").forEach(input => input.value = "");
+  document.getElementById("content").value = "";
+  document.getElementById("otherContent").classList.add("hidden");
+document.body.style.backgroundColor = "";
+}
+
+
+function renderTrips() {
+  const list = document.getElementById("tripList");
+  list.innerHTML = "";
+  trips.forEach((trip, index) => {
+    list.innerHTML += `
+      <tr>
+        <td>${trip.startDate} 〜 ${trip.endDate}</td>
+        <td>${trip.client}</td>
+        <td>${trip.area}</td>
+        <td>${trip.product}</td>
+        <td>${trip.content}</td>
+        <td>${trip.cost}</td>
+        <td>
+          <button onclick="editTrip(${index})">編集</button>
+          <button onclick="deleteTrip(${index})">削除</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+
+function toggleOtherInput() {
+  const content = document.getElementById("content").value;
+  const otherInput = document.getElementById("otherContent");
+
+  if (content === "その他") {
+    otherInput.classList.remove("hidden");
+  } else {
+    otherInput.classList.add("hidden");
+    otherInput.value = "";
+  }
+}
+
+function deleteTrip(index) {
+  trips.splice(index, 1);
+  saveToStorage();
+  renderTrips();
+}
+
+let editIndex = null;
+
+function editTrip(index) {
+  const trip = trips[index];
+
+  document.getElementById("startDate").value = trip.startDate;
+  document.getElementById("endDate").value = trip.endDate;
+  document.getElementById("client").value = trip.client;
+  document.getElementById("area").value = trip.area;
+  document.getElementById("product").value = trip.product;
+  document.getElementById("cost").value = trip.cost;
+
+  // 内容（その他対応）
+  const contentSelect = document.getElementById("content");
+  const otherInput = document.getElementById("otherContent");
+
+  const presetContents = ["据付", "改造", "修理", "保守"];
+
+  if (presetContents.includes(trip.content)) {
+    contentSelect.value = trip.content;
+    otherInput.classList.add("hidden");
+    otherInput.value = "";
+  } else {
+    contentSelect.value = "その他";
+    otherInput.classList.remove("hidden");
+    otherInput.value = trip.content;
+  }
+
+  editIndex = index;
+  document.getElementById("saveBtn").textContent = "更新";
+document.body.style.backgroundColor = "#fff8dc";
+
+}
+
+
+</script>
+</body>
+</html>
