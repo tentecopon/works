@@ -289,24 +289,14 @@ function deleteTrip(i) {
 
 
 
-function validateForm() {
-  const startDate = startDateEl().value;
-  const endDate = endDateEl().value;
-  const client = document.getElementById("client").value;
-  const content = document.getElementById("content").value;
 
-  if (!date || !client || !content) {
-    alert("日付・客先・内容は必須です");
-    return false;
-  }
-  return true;
-}
 
 renderTrips();
 </script>
 
 </body>
 </html>
+
 
 
 
