@@ -162,79 +162,34 @@ function toggleOtherInput() {
     other.value = "";
   }
 };
+function submitTrip() {
+  if (!validateForm()) return;
 
-function addTrip() {
-const startDateEl = () => document.getElementById("startDate");
-const endDate = endDateEl().value;
-const client = clientEl().value.trim();
-let content = document.getElementById("content").value;
-const other = document.getElementById("otherContent").value.trim();
-
-// 必須チェック
-if (!startDate || !endDate) {
-  alert("開始日と終了日は必須です");
-  return;
-}
-
-if (!client) {
-  alert("客先は必須です");
-  return;
-}
-
-if (!content) {
-  alert("内容を選択してください");
-  return;
-}
-
-if (content === "その他" && !other) {
-  alert("その他の内容を入力してください");
-  return;
-}
-
-if (content === "その他") {
-  content = other;
-}
-
+  let content = document.getElementById("content").value;
+  const other = document.getElementById("otherContent").value.trim();
   if (content === "その他") content = other;
 
-  document.querySelector(".container").classList.remove("editing");
-
   const trip = {
-    startDate,
-    endDate,
-    client: clientEl().value,
+    startDate: startDateEl().value,
+    endDate: endDateEl().value,
+    client: clientEl().value.trim(),
     area: areaEl().value,
     product: productEl().value,
-    content,
+    content: content,
     cost: costEl().value
   };
 
   if (editIndex === null) {
-    trips.push(trip);
+    trips.push(trip);          // 新規
   } else {
-    trips[editIndex] = trip;
+    trips[editIndex] = trip;   // 更新
     editIndex = null;
-    document.getElementById("saveBtn").textContent = "保存";
   }
 
   saveToStorage();
   renderTrips();
-  document.querySelectorAll("input").forEach(i => i.value = "");
-}
-
-function submitTrip() {
-  if (!validateForm()) return;
-
-  if (editIndex === null) {
-    // 新規登録
-    addTrip();
-  } else {
-    // 更新
-    updateTrip();
-  }
-
   resetForm();
-};
+}
 
 function subAction() {
   if (editIndex === null) {
@@ -250,6 +205,42 @@ function subAction() {
   }
 };
 
+function resetForm() {
+  document.querySelectorAll("input").forEach(i => i.value = "");
+  document.getElementById("content").value = "";
+  document.getElementById("otherContent").classList.add("hidden");
+
+  document.getElementById("submitBtn").textContent = "登録";
+  document.getElementById("subBtn").textContent = "クリア";
+  document.querySelector(".container").classList.remove("editing");
+
+  editIndex = null;
+}
+
+function validateForm() {
+  if (!startDateEl().value || !endDateEl().value) {
+    alert("開始日と終了日は必須です");
+    return false;
+  }
+  if (startDateEl().value > endDateEl().value) {
+    alert("終了日は開始日以降にしてください");
+    return false;
+  }
+  if (!clientEl().value.trim()) {
+    alert("客先は必須です");
+    return false;
+  }
+  const content = document.getElementById("content").value;
+  if (!content) {
+    alert("内容を選択してください");
+    return false;
+  }
+  if (content === "その他" && !document.getElementById("otherContent").value.trim()) {
+    alert("その他の内容を入力してください");
+    return false;
+  }
+  return true;
+}
   
 function renderTrips() {
   const list = document.getElementById("tripList");
@@ -316,6 +307,7 @@ renderTrips();
 
 </body>
 </html>
+
 
 
 
