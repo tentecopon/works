@@ -157,7 +157,7 @@ function toggleOtherInput() {
 };
 
 function addTrip() {
-  const startDate = startDateEl().value;
+const startDateEl = () => document.getElementById("startDate");
 const endDate = endDateEl().value;
 const client = clientEl().value.trim();
 let content = document.getElementById("content").value;
@@ -187,7 +187,6 @@ if (content === "その他" && !other) {
 if (content === "その他") {
   content = other;
 }
- 
 
   if (content === "その他") content = other;
 
@@ -269,6 +268,7 @@ function renderTrips() {
 };
 
 function editTrip(index) {
+  const t = trips[index];
   editIndex = index;
   startDateEl().value = t.startDate;
   endDateEl().value = t.endDate;
@@ -292,7 +292,8 @@ function deleteTrip(i) {
 
 
 function validateForm() {
-  const date = document.getElementById("date").value;
+  const startDate = startDateEl().value;
+  const endDate = endDateEl().value;
   const client = document.getElementById("client").value;
   const content = document.getElementById("content").value;
 
@@ -313,6 +314,7 @@ renderTrips();
 
 </body>
 </html>
+
 
 
 
