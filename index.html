@@ -1,23 +1,107 @@
 仕事<!DOCTYPE html>
 <html lang="ja">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2196f3">
-
 
 <head>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2196f3">
 <meta charset="UTF-8">
 <title>出張管理アプリ</title>
-<style>
-body { font-family: Arial; padding: 20px; }
-input, select { margin: 5px; padding: 5px; }
-button { padding: 5px 10px; }
-table { border-collapse: collapse; margin-top: 20px; }
-th, td { border: 1px solid #ccc; padding: 8px; }
-th { background: #f0f0f0; }
-.hidden { display: none; }
-</style>
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f5f5f5;
+}
+
+.container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 12px;
+  background: #ffffff;
+  min-height: 100vh;
+}
+
+h2 {
+  margin-top: 16px;
+  font-size: 20px;
+}
+
+/* 入力系は全部指サイズ */
+input, select, button {
+  width: 100%;
+  font-size: 16px; /* iOSズーム防止 */
+  padding: 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+button {
+  background: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+}
+
+button:active {
+  opacity: 0.7;
+}
+
+/* 日付範囲 */
+.date-range {
+  display: flex;
+  gap: 8px;
+}
+
+.date-range input {
+  flex: 1;
+}
+
+/* テーブル → スマホカード表示 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+thead {
+  display: none;
+}
+
+tr {
+  display: block;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  padding: 10px;
+}
+
+td {
+  display: block;
+  border: none;
+  padding: 4px 0;
+  font-size: 14px;
+}
+
+/* 編集・削除ボタン */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.action-buttons button {
+  flex: 1;
+  font-size: 14px;
+  padding: 8px;
+}
+
+/* その他入力 */
+.hidden {
+  display: none;
+}
 </head>
 <body>
+<div class="container">
 
 <h2>出張入力</h2>
 
@@ -141,16 +225,21 @@ function renderTrips() {
   trips.forEach((trip, index) => {
     list.innerHTML += `
       <tr>
-        <td>${trip.startDate} 〜 ${trip.endDate}</td>
+       <div class="date-range">
+  <input type="date" id="startDate">
+  <input type="date" id="endDate">
+</div>
         <td>${trip.client}</td>
         <td>${trip.area}</td>
         <td>${trip.product}</td>
         <td>${trip.content}</td>
         <td>${trip.cost}</td>
         <td>
-          <button onclick="editTrip(${index})">編集</button>
-          <button onclick="deleteTrip(${index})">削除</button>
-        </td>
+  <div class="action-buttons">
+    <button onclick="editTrip(${index})">編集</button>
+    <button onclick="deleteTrip(${index})">削除</button>
+  </div>
+</td>
       </tr>
     `;
   });
@@ -211,5 +300,7 @@ document.body.style.backgroundColor = "#fff8dc";
 
 
 </script>
+</div>
 </body>
+
 </html>
