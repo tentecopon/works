@@ -157,6 +157,36 @@ function toggleOtherInput() {
 
 function addTrip() {
   const startDate = startDateEl().value;
+const endDate = endDateEl().value;
+const client = clientEl().value.trim();
+let content = document.getElementById("content").value;
+const other = document.getElementById("otherContent").value.trim();
+
+// 必須チェック
+if (!startDate || !endDate) {
+  alert("開始日と終了日は必須です");
+  return;
+}
+
+if (!client) {
+  alert("客先は必須です");
+  return;
+}
+
+if (!content) {
+  alert("内容を選択してください");
+  return;
+}
+
+if (content === "その他" && !other) {
+  alert("その他の内容を入力してください");
+  return;
+}
+
+if (content === "その他") {
+  content = other;
+}
+  const startDate = startDateEl().value;
   const endDate = endDateEl().value;
 
   let content = document.getElementById("content").value;
@@ -244,6 +274,7 @@ renderTrips();
 
 </body>
 </html>
+
 
 
 
