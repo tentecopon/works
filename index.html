@@ -126,7 +126,8 @@
 
     <input type="number" id="cost" placeholder="出張費">
 
-    <button id="saveBtn" onclick="addTrip()">保存</button>
+    <button id="submitBtn" onclick="submitTrip()">登録</button>
+    <button id="subBtn" onclick="subAction()">クリア</button>
 
     <h2>出張一覧</h2>
 
@@ -242,8 +243,8 @@ function renderTrips() {
   });
 }
 
-function editTrip(i) {
-  const t = trips[i];
+function editTrip(index) {
+  editIndex = index;
   startDateEl().value = t.startDate;
   endDateEl().value = t.endDate;
   clientEl().value = t.client;
@@ -251,8 +252,9 @@ function editTrip(i) {
   productEl().value = t.product;
   costEl().value = t.cost;
   document.getElementById("content").value = t.content;
-editIndex = i;
-document.getElementById("saveBtn").textContent = "更新";
+editIndex = index;
+document.getElementById("submitBtn").textContent = "更新";
+  document.getElementById("subBtn").textContent = "キャンセル";
 document.querySelector(".container").classList.add("editing");
 
 }
@@ -262,6 +264,46 @@ function deleteTrip(i) {
   renderTrips();
 }
 
+function submitTrip() {
+  if (!validateForm()) return;
+
+  if (editIndex === null) {
+    // 新規登録
+    addTrip();
+  } else {
+    // 更新
+    updateTrip();
+  }
+
+  resetForm();
+}
+
+function subAction() {
+  if (editIndex === null) {
+    // 新規 → クリア
+    if (confirm("入力内容をクリアしますか？")) {
+      resetForm();
+    }
+  } else {
+    // 編集 → キャンセル
+    if (confirm("編集をキャンセルしますか？")) {
+      resetForm();
+    }
+  }
+}
+
+
+function validateForm() {
+  const date = document.getElementById("date").value;
+  const client = document.getElementById("client").value;
+  const content = document.getElementById("content").value;
+
+  if (!date || !client || !content) {
+    alert("日付・客先・内容は必須です");
+    return false;
+  }
+  return true;
+}
 const startDateEl = () => document.getElementById("startDate");
 const endDateEl = () => document.getElementById("endDate");
 const clientEl = () => document.getElementById("client");
@@ -274,6 +316,7 @@ renderTrips();
 
 </body>
 </html>
+
 
 
 
