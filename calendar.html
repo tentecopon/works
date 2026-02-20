@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>出張カレンダー</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <button onclick="location.href='index.html'">一覧</button>
+</nav>
+
+<h2>出張カレンダー</h2>
+<input type="month" id="month">
+
+<div id="calendar"></div>
+
+<script type="module">
+import { loadTrips } from "./common.js";
+
+const trips = loadTrips();
+const calendarEl = document.getElementById("calendar");
+
+document.getElementById("month").addEventListener("change", e => {
+  renderCalendar(e.target.value);
+});
+
+function renderCalendar(month) {
+  calendarEl.innerHTML = "";
+  trips
+    .filter(t => t.startDate.startsWith(month))
+    .forEach(t => {
+      calendarEl.innerHTML += `
+        <div class="calendar-item">
+          📅 ${t.startDate}〜${t.endDate}<br>
+          ${t.client}（${t.area}）
+        </div>
+      `;
+    });
+}
+</script>
+
+</body>
+</html>
