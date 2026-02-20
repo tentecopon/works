@@ -164,7 +164,7 @@ function addTrip() {
 
   if (content === "その他") content = other;
 
-  document.body.classList.remove("editing");
+  document.querySelector(".container").classList.remove("editing");
 
   const trip = {
     startDate,
@@ -244,6 +244,7 @@ renderTrips();
 
 </body>
 </html>
+
 
 
 
