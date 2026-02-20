@@ -220,6 +220,35 @@ if (content === "その他") {
   document.querySelectorAll("input").forEach(i => i.value = "");
 }
 
+function submitTrip() {
+  if (!validateForm()) return;
+
+  if (editIndex === null) {
+    // 新規登録
+    addTrip();
+  } else {
+    // 更新
+    updateTrip();
+  }
+
+  resetForm();
+}
+
+function subAction() {
+  if (editIndex === null) {
+    // 新規 → クリア
+    if (confirm("入力内容をクリアしますか？")) {
+      resetForm();
+    }
+  } else {
+    // 編集 → キャンセル
+    if (confirm("編集をキャンセルしますか？")) {
+      resetForm();
+    }
+  }
+}
+
+  
 function renderTrips() {
   const list = document.getElementById("tripList");
   list.innerHTML = "";
@@ -264,33 +293,6 @@ function deleteTrip(i) {
   renderTrips();
 }
 
-function submitTrip() {
-  if (!validateForm()) return;
-
-  if (editIndex === null) {
-    // 新規登録
-    addTrip();
-  } else {
-    // 更新
-    updateTrip();
-  }
-
-  resetForm();
-}
-
-function subAction() {
-  if (editIndex === null) {
-    // 新規 → クリア
-    if (confirm("入力内容をクリアしますか？")) {
-      resetForm();
-    }
-  } else {
-    // 編集 → キャンセル
-    if (confirm("編集をキャンセルしますか？")) {
-      resetForm();
-    }
-  }
-}
 
 
 function validateForm() {
@@ -316,6 +318,7 @@ renderTrips();
 
 </body>
 </html>
+
 
 
 
