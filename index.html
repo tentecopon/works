@@ -1,314 +1,239 @@
-仕事<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
-
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2196f3">
-<meta charset="UTF-8">
-<title>出張管理アプリ</title>
-<style>
-body {
-  margin: 0;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-  background: #f5f5f5;
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2196f3">
+  <title>出張管理アプリ</title>
 
-.container {
-  max-width: 480px;
-  margin: 0 auto;
-  padding: 12px;
-  background: #ffffff;
-  min-height: 100vh;
-}
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: #f5f5f5;
+    }
 
-h2 {
-  margin-top: 16px;
-  font-size: 20px;
-}
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 12px;
+      background: #fff;
+      min-height: 100vh;
+    }
 
-/* 入力系は全部指サイズ */
-input, select, button {
-  width: 100%;
-  font-size: 16px; /* iOSズーム防止 */
-  padding: 10px;
-  margin-bottom: 10px;
-  box-sizing: border-box;
-}
+    h2 {
+      font-size: 20px;
+      margin-top: 16px;
+    }
 
-button {
-  background: #2196f3;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-}
+    input, select, button {
+      width: 100%;
+      font-size: 16px;
+      padding: 10px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
 
-button:active {
-  opacity: 0.7;
-}
+    button {
+      background: #2196f3;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+    }
 
-/* 日付範囲 */
-.date-range {
-  display: flex;
-  gap: 8px;
-}
+    .date-range {
+      display: flex;
+      gap: 8px;
+    }
 
-.date-range input {
-  flex: 1;
-}
+    .date-range input {
+      flex: 1;
+    }
 
-/* テーブル → スマホカード表示 */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 12px;
-}
+    table {
+      width: 100%;
+      margin-top: 12px;
+    }
 
-thead {
-  display: none;
-}
+    thead {
+      display: none;
+    }
 
-tr {
-  display: block;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  padding: 10px;
-}
+    tr {
+      display: block;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
 
-td {
-  display: block;
-  border: none;
-  padding: 4px 0;
-  font-size: 14px;
-}
+    td {
+      display: block;
+      border: none;
+      padding: 4px 0;
+    }
 
-/* 編集・削除ボタン */
-.action-buttons {
-  display: flex;
-  gap: 8px;
-  margin-top: 8px;
-}
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
 
-.action-buttons button {
-  flex: 1;
-  font-size: 14px;
-  padding: 8px;
-}
-
-/* その他入力 */
-.hidden {
-  display: none;
-}
-</style>
+    .hidden {
+      display: none;
+    }
+  </style>
 </head>
+
 <body>
-<div class="container">
+  <div class="container">
 
-  
-<h2>出張入力</h2>
+    <h2>出張入力</h2>
 
+    <div class="date-range">
+      <input type="date" id="startDate">
+      <input type="date" id="endDate">
+    </div>
 
-<input type="date" id="startDate">
-〜
-<input type="date" id="endDate">
+    <input type="text" id="client" placeholder="客先">
 
-<input type="text" id="client" placeholder="客先">
+    <select id="area">
+      <option value="">地方選択</option>
+      <option>関東</option>
+      <option>関西</option>
+      <option>中部</option>
+      <option>九州</option>
+    </select>
 
-<select id="area">
-  <option value="">地方選択</option>
-  <option>関東</option>
-  <option>関西</option>
-  <option>中部</option>
-  <option>九州</option>
-</select>
+    <input type="text" id="product" placeholder="製品">
 
-<input type="text" id="product" placeholder="製品">
+    <select id="content" onchange="toggleOtherInput()">
+      <option value="">内容選択</option>
+      <option>据付</option>
+      <option>改造</option>
+      <option>修理</option>
+      <option>保守</option>
+      <option>その他</option>
+    </select>
 
-<select id="content" onchange="toggleOtherInput()">
-  <option value="">内容選択</option>
-  <option>据付</option>
-  <option>改造</option>
-  <option>修理</option>
-  <option>保守</option>
-  <option>その他</option>
-</select>
+    <input type="text" id="otherContent" class="hidden" placeholder="内容を入力">
 
-<input type="text" id="otherContent" placeholder="内容を入力" class="hidden">
+    <input type="number" id="cost" placeholder="出張費">
 
-<input type="number" id="cost" placeholder="出張費">
-<button id="saveBtn" onclick="addTrip()">保存</button>
+    <button id="saveBtn" onclick="addTrip()">保存</button>
 
+    <h2>出張一覧</h2>
 
-<h2>出張一覧</h2>
-<table>
-<thead>
-<tr>
-<th>期間</th>
-<th>客先</th>
-<th>地方</th>
-<th>製品</th>
-<th>内容</th>
-<th>出張費</th>
-<th>削除</th>
-</tr>
-</thead>
-<tbody id="tripList"></tbody>
-</table>
+    <table>
+      <tbody id="tripList"></tbody>
+    </table>
+
+  </div>
 
 <script>
 let trips = JSON.parse(localStorage.getItem("trips")) || [];
-
+let editIndex = null;
 
 function saveToStorage() {
   localStorage.setItem("trips", JSON.stringify(trips));
 }
 
+function toggleOtherInput() {
+  const content = document.getElementById("content").value;
+  const other = document.getElementById("otherContent");
+  if (content === "その他") {
+    other.classList.remove("hidden");
+  } else {
+    other.classList.add("hidden");
+    other.value = "";
+  }
+}
+
 function addTrip() {
-  const startDate = document.getElementById("startDate").value;
-  const endDate = document.getElementById("endDate").value;
+  const startDate = startDateEl().value;
+  const endDate = endDateEl().value;
 
-  let selectedContent = document.getElementById("content").value;
-  const otherContent = document.getElementById("otherContent").value;
+  let content = document.getElementById("content").value;
+  const other = document.getElementById("otherContent").value;
 
-  if (selectedContent === "その他") {
-    if (!otherContent) {
-      alert("その他の内容を入力してください");
-      return;
-    }
-    selectedContent = otherContent;
-  }
-
-  if (!startDate || !endDate) {
-    alert("開始日と終了日を入力してください");
-    return;
-  }
-
-  if (startDate > endDate) {
-    alert("終了日は開始日以降にしてください");
-    return;
-  }
+  if (content === "その他") content = other;
 
   const trip = {
     startDate,
     endDate,
-    client: document.getElementById("client").value,
-    area: document.getElementById("area").value,
-    product: document.getElementById("product").value,
-    content: selectedContent,
-    cost: document.getElementById("cost").value
+    client: clientEl().value,
+    area: areaEl().value,
+    product: productEl().value,
+    content,
+    cost: costEl().value
   };
 
   if (editIndex === null) {
-    // 新規保存
     trips.push(trip);
   } else {
-    // 更新
     trips[editIndex] = trip;
     editIndex = null;
+    document.getElementById("saveBtn").textContent = "保存";
   }
 
   saveToStorage();
   renderTrips();
-
-  // 🔽 ここが超重要（必ず毎回実行される）
-  document.getElementById("saveBtn").textContent = "保存";
-
-  // フォーム初期化
-  document.querySelectorAll("input").forEach(input => input.value = "");
-  document.getElementById("content").value = "";
-  document.getElementById("otherContent").classList.add("hidden");
-document.body.style.backgroundColor = "";
+  document.querySelectorAll("input").forEach(i => i.value = "");
 }
-
 
 function renderTrips() {
   const list = document.getElementById("tripList");
   list.innerHTML = "";
-  trips.forEach((trip, index) => {
+  trips.forEach((t, i) => {
     list.innerHTML += `
       <tr>
-       <div class="date-range">
-  <input type="date" id="startDate">
-  <input type="date" id="endDate">
-</div>
-        <td>${trip.client}</td>
-        <td>${trip.area}</td>
-        <td>${trip.product}</td>
-        <td>${trip.content}</td>
-        <td>${trip.cost}</td>
+        <td>期間：${t.startDate}〜${t.endDate}</td>
+        <td>客先：${t.client}</td>
+        <td>地方：${t.area}</td>
+        <td>製品：${t.product}</td>
+        <td>内容：${t.content}</td>
+        <td>費用：${t.cost}</td>
         <td>
-  <div class="action-buttons">
-    <button onclick="editTrip(${index})">編集</button>
-    <button onclick="deleteTrip(${index})">削除</button>
-  </div>
-</td>
+          <div class="action-buttons">
+            <button onclick="editTrip(${i})">編集</button>
+            <button onclick="deleteTrip(${i})">削除</button>
+          </div>
+        </td>
       </tr>
     `;
   });
 }
 
-
-function toggleOtherInput() {
-  const content = document.getElementById("content").value;
-  const otherInput = document.getElementById("otherContent");
-
-  if (content === "その他") {
-    otherInput.classList.remove("hidden");
-  } else {
-    otherInput.classList.add("hidden");
-    otherInput.value = "";
-  }
+function editTrip(i) {
+  const t = trips[i];
+  startDateEl().value = t.startDate;
+  endDateEl().value = t.endDate;
+  clientEl().value = t.client;
+  areaEl().value = t.area;
+  productEl().value = t.product;
+  costEl().value = t.cost;
+  document.getElementById("content").value = t.content;
+  editIndex = i;
+  document.getElementById("saveBtn").textContent = "更新";
 }
 
-function deleteTrip(index) {
-  trips.splice(index, 1);
+function deleteTrip(i) {
+  trips.splice(i, 1);
   saveToStorage();
   renderTrips();
 }
 
-let editIndex = null;
+const startDateEl = () => document.getElementById("startDate");
+const endDateEl = () => document.getElementById("endDate");
+const clientEl = () => document.getElementById("client");
+const areaEl = () => document.getElementById("area");
+const productEl = () => document.getElementById("product");
+const costEl = () => document.getElementById("cost");
 
-function editTrip(index) {
-  const trip = trips[index];
-
-  document.getElementById("startDate").value = trip.startDate;
-  document.getElementById("endDate").value = trip.endDate;
-  document.getElementById("client").value = trip.client;
-  document.getElementById("area").value = trip.area;
-  document.getElementById("product").value = trip.product;
-  document.getElementById("cost").value = trip.cost;
-
-  // 内容（その他対応）
-  const contentSelect = document.getElementById("content");
-  const otherInput = document.getElementById("otherContent");
-
-  const presetContents = ["据付", "改造", "修理", "保守"];
-
-  if (presetContents.includes(trip.content)) {
-    contentSelect.value = trip.content;
-    otherInput.classList.add("hidden");
-    otherInput.value = "";
-  } else {
-    contentSelect.value = "その他";
-    otherInput.classList.remove("hidden");
-    otherInput.value = trip.content;
-  }
-
-  editIndex = index;
-  document.getElementById("saveBtn").textContent = "更新";
-document.body.style.backgroundColor = "#fff8dc";
-
-}
-
-
+renderTrips();
 </script>
-</div>
+
 </body>
-
 </html>
-
-
-
-
