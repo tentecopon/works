@@ -145,7 +145,6 @@
 import { loadTrips, saveTrips } from "./common.js";
 
 let trips = loadTrips();
-let trips = JSON.parse(localStorage.getItem("trips")) || [];
 let editIndex = null;
 
 const startDateEl = () => document.getElementById("startDate");
@@ -307,6 +306,7 @@ renderTrips();
 
 </body>
 </html>
+
 
 
 
