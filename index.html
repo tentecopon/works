@@ -224,6 +224,8 @@ function editTrip(i) {
  editIndex = i;
 document.getElementById("saveBtn").textContent = "更新";
 document.body.classList.add("editing");
+
+}
 function deleteTrip(i) {
   trips.splice(i, 1);
   saveToStorage();
@@ -242,4 +244,5 @@ renderTrips();
 
 </body>
 </html>
+
 
