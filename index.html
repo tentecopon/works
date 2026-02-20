@@ -84,6 +84,10 @@
     .hidden {
       display: none;
     }
+
+    .editing {
+  background: #fff8dc; /* 薄い黄色 */
+}
   </style>
 </head>
 
@@ -160,6 +164,8 @@ function addTrip() {
 
   if (content === "その他") content = other;
 
+  document.body.classList.remove("editing");
+
   const trip = {
     startDate,
     endDate,
@@ -215,10 +221,9 @@ function editTrip(i) {
   productEl().value = t.product;
   costEl().value = t.cost;
   document.getElementById("content").value = t.content;
-  editIndex = i;
-  document.getElementById("saveBtn").textContent = "更新";
-}
-
+ editIndex = i;
+document.getElementById("saveBtn").textContent = "更新";
+document.body.classList.add("editing");
 function deleteTrip(i) {
   trips.splice(i, 1);
   saveToStorage();
@@ -237,3 +242,4 @@ renderTrips();
 
 </body>
 </html>
+
