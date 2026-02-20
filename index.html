@@ -221,9 +221,9 @@ function editTrip(i) {
   productEl().value = t.product;
   costEl().value = t.cost;
   document.getElementById("content").value = t.content;
- editIndex = i;
+editIndex = i;
 document.getElementById("saveBtn").textContent = "更新";
-document.body.classList.add("editing");
+document.querySelector(".container").classList.add("editing");
 
 }
 function deleteTrip(i) {
@@ -244,6 +244,7 @@ renderTrips();
 
 </body>
 </html>
+
 
 
 
