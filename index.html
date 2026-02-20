@@ -93,6 +93,10 @@
 
 <body>
   <div class="container">
+    <nav>
+  <button onclick="location.href='index.html'">一覧</button>
+  <button onclick="location.href='calendar.html'">カレンダー</button>
+</nav>
 
     <h2>出張入力</h2>
 
@@ -137,7 +141,10 @@
 
   </div>
 
-<script>
+<script type="module">
+import { loadTrips, saveTrips } from "./common.js";
+
+let trips = loadTrips();
 let trips = JSON.parse(localStorage.getItem("trips")) || [];
 let editIndex = null;
 
@@ -300,6 +307,7 @@ renderTrips();
 
 </body>
 </html>
+
 
 
 
